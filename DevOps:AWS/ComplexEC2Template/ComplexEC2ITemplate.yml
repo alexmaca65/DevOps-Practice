@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  This is a template containing 2 EC2 instances, an Application Load Balancer, S3 Bucket,
+  RedisCache and SNS Trigger Lambda
+Parameters:
+  EnvironmentName:
+    Description: An environment name that is prefixed to resource names
+    Type: String
+  VpcCIDR:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/24
+  PublicSubnetStaticEc2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the Public Subnet wich contains the EC2 instance
+    Type: String
+    Default: 10.0.0.0/28
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+Outputs:
+  VPC:
+    Description: A reference to the created VPC
+    Value: !Ref MyVPC

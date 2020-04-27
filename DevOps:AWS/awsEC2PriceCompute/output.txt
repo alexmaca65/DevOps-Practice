@@ -1,0 +1,415 @@
+[
+  {
+    "product": {
+      "productFamily": "Compute Instance",
+      "attributes": {
+        "enhancedNetworkingSupported": "Yes",
+        "intelTurboAvailable": "Yes",
+        "memory": "8 GiB",
+        "dedicatedEbsThroughput": "Up to 2120 Mbps",
+        "vcpu": "2",
+        "capacitystatus": "Used",
+        "locationType": "AWS Region",
+        "storage": "EBS only",
+        "instanceFamily": "General purpose",
+        "operatingSystem": "Linux",
+        "intelAvx2Available": "Yes",
+        "physicalProcessor": "Intel Xeon Platinum 8175 (Skylake)",
+        "clockSpeed": "3.1 GHz",
+        "ecu": "10",
+        "networkPerformance": "Up to 10 Gigabit",
+        "servicename": "Amazon Elastic Compute Cloud",
+        "instanceType": "m5.large",
+        "tenancy": "Shared",
+        "usagetype": "EU-BoxUsage:m5.large",
+        "normalizationSizeFactor": "4",
+        "intelAvxAvailable": "Yes",
+        "processorFeatures": "Intel AVX; Intel AVX2; Intel AVX512; Intel Turbo",
+        "servicecode": "AmazonEC2",
+        "licenseModel": "No License required",
+        "currentGeneration": "Yes",
+        "preInstalledSw": "NA",
+        "location": "EU (Ireland)",
+        "processorArchitecture": "64-bit",
+        "operation": "RunInstances"
+      },
+      "sku": "FP7Z96TTU3VFSX2H"
+    },
+    "serviceCode": "AmazonEC2",
+    "terms": {
+      "OnDemand": {
+        "FP7Z96TTU3VFSX2H.JRTCKXETXF": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.JRTCKXETXF.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "$0.107 per On Demand Linux m5.large Instance Hour",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.JRTCKXETXF.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.1070000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2020-02-01T00:00:00Z",
+          "offerTermCode": "JRTCKXETXF",
+          "termAttributes": {}
+        }
+      },
+      "Reserved": {
+        "FP7Z96TTU3VFSX2H.6QCMYABX3D": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.6QCMYABX3D.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.6QCMYABX3D.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "614"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.6QCMYABX3D.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.6QCMYABX3D.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0000000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "6QCMYABX3D",
+          "termAttributes": {
+            "LeaseContractLength": "1yr",
+            "OfferingClass": "standard",
+            "PurchaseOption": "All Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.HU7G6KETJZ": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.HU7G6KETJZ.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.HU7G6KETJZ.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "313"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.HU7G6KETJZ.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.HU7G6KETJZ.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0360000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "HU7G6KETJZ",
+          "termAttributes": {
+            "LeaseContractLength": "1yr",
+            "OfferingClass": "standard",
+            "PurchaseOption": "Partial Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.BPH4J8HBKS": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.BPH4J8HBKS.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.BPH4J8HBKS.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0530000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "BPH4J8HBKS",
+          "termAttributes": {
+            "LeaseContractLength": "3yr",
+            "OfferingClass": "standard",
+            "PurchaseOption": "No Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.MZU6U2429S": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.MZU6U2429S.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.MZU6U2429S.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "1457"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.MZU6U2429S.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.MZU6U2429S.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0000000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "MZU6U2429S",
+          "termAttributes": {
+            "LeaseContractLength": "3yr",
+            "OfferingClass": "convertible",
+            "PurchaseOption": "All Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.4NA7Y494T4": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.4NA7Y494T4.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.4NA7Y494T4.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0750000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "4NA7Y494T4",
+          "termAttributes": {
+            "LeaseContractLength": "1yr",
+            "OfferingClass": "standard",
+            "PurchaseOption": "No Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.VJWZNREJX2": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.VJWZNREJX2.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.VJWZNREJX2.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "706"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.VJWZNREJX2.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.VJWZNREJX2.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0000000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "VJWZNREJX2",
+          "termAttributes": {
+            "LeaseContractLength": "1yr",
+            "OfferingClass": "convertible",
+            "PurchaseOption": "All Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.CUZHX8X6JH": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.CUZHX8X6JH.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.CUZHX8X6JH.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0410000000"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.CUZHX8X6JH.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.CUZHX8X6JH.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "360"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "CUZHX8X6JH",
+          "termAttributes": {
+            "LeaseContractLength": "1yr",
+            "OfferingClass": "convertible",
+            "PurchaseOption": "Partial Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.7NE97W5U4E": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.7NE97W5U4E.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.7NE97W5U4E.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0860000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "7NE97W5U4E",
+          "termAttributes": {
+            "LeaseContractLength": "1yr",
+            "OfferingClass": "convertible",
+            "PurchaseOption": "No Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.NQ3QZPMQV9": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.NQ3QZPMQV9.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.NQ3QZPMQV9.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0000000000"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.NQ3QZPMQV9.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.NQ3QZPMQV9.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "1215"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "NQ3QZPMQV9",
+          "termAttributes": {
+            "LeaseContractLength": "3yr",
+            "OfferingClass": "standard",
+            "PurchaseOption": "All Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.Z2E3P23VKM": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.Z2E3P23VKM.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.Z2E3P23VKM.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0610000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "Z2E3P23VKM",
+          "termAttributes": {
+            "LeaseContractLength": "3yr",
+            "OfferingClass": "convertible",
+            "PurchaseOption": "No Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.R5XV2EPZQZ": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.R5XV2EPZQZ.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.R5XV2EPZQZ.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "743"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.R5XV2EPZQZ.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.R5XV2EPZQZ.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0280000000"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "R5XV2EPZQZ",
+          "termAttributes": {
+            "LeaseContractLength": "3yr",
+            "OfferingClass": "convertible",
+            "PurchaseOption": "Partial Upfront"
+          }
+        },
+        "FP7Z96TTU3VFSX2H.38NPMPTW36": {
+          "priceDimensions": {
+            "FP7Z96TTU3VFSX2H.38NPMPTW36.6YS6EN2CT7": {
+              "unit": "Hrs",
+              "endRange": "Inf",
+              "description": "Linux/UNIX (Amazon VPC), m5.large reserved instance applied",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.38NPMPTW36.6YS6EN2CT7",
+              "beginRange": "0",
+              "pricePerUnit": {
+                "USD": "0.0250000000"
+              }
+            },
+            "FP7Z96TTU3VFSX2H.38NPMPTW36.2TG2D8R56U": {
+              "unit": "Quantity",
+              "description": "Upfront Fee",
+              "appliesTo": [],
+              "rateCode": "FP7Z96TTU3VFSX2H.38NPMPTW36.2TG2D8R56U",
+              "pricePerUnit": {
+                "USD": "647"
+              }
+            }
+          },
+          "sku": "FP7Z96TTU3VFSX2H",
+          "effectiveDate": "2017-10-31T23:59:59Z",
+          "offerTermCode": "38NPMPTW36",
+          "termAttributes": {
+            "LeaseContractLength": "3yr",
+            "OfferingClass": "standard",
+            "PurchaseOption": "Partial Upfront"
+          }
+        }
+      }
+    },
+    "version": "20200211182015",
+    "publicationDate": "2020-02-11T18:20:15Z"
+  }
+]
