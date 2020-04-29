@@ -54,6 +54,42 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref PublicSubnetEC2
+  NetworkACL:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InboundNetworkAclEntry:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      CidrBlock: 0.0.0.0/0
+      RuleNumber: 100
+      RuleAction: allow
+      Protocol: -1
+      Egress: false
+      PortRange:
+        From: 0
+        To: 65535
+  OutboundNetworkAclEntry:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      CidrBlock: 0.0.0.0/0
+      RuleNumber: 100
+      RuleAction: allow
+      Protocol: -1
+      Egress: true
+      PortRange:
+        From: 0
+        To: 65535
+  PublicSubnetNetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      SubnetId: !Ref PublicSubnetEC2
   PublicSubnetEC2:
     Type: AWS::EC2::Subnet
     Properties:
