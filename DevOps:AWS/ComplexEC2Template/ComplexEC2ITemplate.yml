@@ -4,16 +4,60 @@ Description: >-
   RedisCache and SNS Trigger Lambda
 Parameters:
   EnvironmentName:
+    Type: String
     Description: An environment name that is prefixed to resource names
-    Type: String
   VpcCIDR:
-    Description: Please enter the IP range (CIDR notation) for this VPC
     Type: String
+    Description: Please enter the IP range (CIDR notation) for this VPC
     Default: 10.0.0.0/24
   PublicSubnetStaticEc2CIDR:
-    Description: Please enter the IP range (CIDR notation) for the Public Subnet wich contains the EC2 instance
     Type: String
+    Description: Please enter the IP range (CIDR notation) for the Public Subnet wich contains the EC2 instance
     Default: 10.0.0.0/28
+  SecurityGroupName:
+    Type: String
+    Description: Please enter the name of the Security Group
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  InstanceType:
+    Type: String
+    Description: WebServer EC2 instance type
+    Default: t2.micro
+    AllowedValues:
+      - t1.micro
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m1.small
+      - m1.medium
+      - m1.large
+      - m1.xlarge
+      - m2.xlarge
+      - m2.2xlarge
+      - m2.4xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - c1.medium
+      - c1.xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - c4.large
+      - c4.xlarge
+    ConstraintDescription: must be a valid EC2 instance type
 Resources:
   MyVPC:
     Type: AWS::EC2::VPC
@@ -100,6 +144,41 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} Public Subnet (AZ1)'
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref SecurityGroupName
+      GroupDescription: Allow HTTP to client host
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      SecurityGroupIds: String
+      SecurityGroups: String
+      SubnetId: String
+      KeyName: String
+      InstanceType: String
+      AvailabilityZone: String
+      HostId: String
+      ImageId: String
+      UserData: String
+      Volumes:
+        - Volumes
+      Tags:
+        - Tag
 Outputs:
   VPC:
     Description: A reference to the created VPC
