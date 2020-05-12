@@ -14,6 +14,10 @@ Parameters:
     Type: String
     Description: Please enter the IP range (CIDR notation) for the Public Subnet wich contains the EC2 instance
     Default: 10.0.0.0/28
+  PublicSubnetAsgCIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for the Public Subnet wich contains the EC2 instance
+    Default: 10.0.0.16/28
   SecurityGroupName:
     Type: String
     Description: Please enter the name of the Security Group
@@ -190,6 +194,7 @@ Mappings:
       HVM64: ami-0f7937761741dc640
       HVMG2: NOT_SUPPORTED
 Resources:
+#-------VPC Create-------
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -199,6 +204,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
+#-------( IG ) Internet Gateway Create and Config-------
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -210,6 +216,28 @@ Resources:
     Properties:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref MyVPC
+#-------( ALB ) Application Load Balancer(ELBv2)-------
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: ALB
+      IpAddressType: ipv4
+      SecurityGroups:
+        - !Ref SecurityGroupALB
+      Subnets:
+        - !Ref PublicSubnetASG
+      Tags:
+        - Key: Name
+          Value: !Ref
+  ListenerALB:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Protocol: HTTP
+      Port: 80
+      DefaultActions:
+        Type: forward
+#-------( RT ) Route Table Create and Config-------
   RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -229,6 +257,7 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref PublicSubnetEC2
+#-------( NACL ) Network ACL Create and Config-------
   NetworkACL:
     Type: AWS::EC2::NetworkAcl
     Properties:
@@ -265,7 +294,7 @@ Resources:
     Properties:
       NetworkAclId: !Ref NetworkACL
       SubnetId: !Ref PublicSubnetEC2
-#-------Subnets-------
+#-------SUBNETS-------
   PublicSubnetEC2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -279,20 +308,20 @@ Resources:
   PublicSubnetASG:
     Type: AWS::EC2::Subnet
     Properties:
-#------HEREEEE--------
-      CidrBlock: !PublicSubnetStaticEc2CIDR
+      CidrBlock: !Ref PublicSubnetAsgCIDR
       VpcId: !Ref MyVPC
-      AvailabilityZone: !Select [0, !GetAZs '']
+      AvailabilityZone: !Select [1, !GetAZs '']
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: !Sub '${EnvironmentName} Public Subnet (AZ1) on ASG'
-#-------Security Groups-------
-  SecurityGroup:
+          Value: !Sub '${EnvironmentName} Public Subnet (AZ2) on ASG'
+#-------( SG ) Security Groups-------
+  SecurityGroupEC2:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Ref SecurityGroupName
       GroupDescription: Allow HTTP to client host
+      VpcId: !Ref MyVPC
       SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort: 80
@@ -303,15 +332,34 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
-      VpcId: !Ref MyVPC
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
+  SecurityGroupALB:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub '${SecurityGroupName} ALB'
+      GroupDescription: Enable HTTP/HTTPS access
+      VpcId: !Ref MyVPC
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} ALB'
   SecurityGroupASG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub '${SecurityGroupName} ASG'
       GroupDescription: Allow HTTP to client host(Use on AutoScaling Group)
+      VpcId: !Ref MyVPC
       SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort: 80
@@ -322,18 +370,19 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
-      VpcId: !Ref MyVPC
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} ASG'
+#-------( EC2 ) Instances-------
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       SecurityGroupIds:
-        - !Ref SecurityGroup
+        - !Ref SecurityGroupEC2
       SubnetId: !Ref PublicSubnetEC2
       KeyName: !Ref KeyName
       InstanceType: !Ref InstanceType
+      AvailabilityZone: !Select [0, !GetAZs '']
       ImageId: !FindInMap
         - AWSRegionArch2AMI
         - !Ref AWS::Region
