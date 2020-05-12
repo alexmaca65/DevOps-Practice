@@ -228,7 +228,7 @@ Resources:
         - !Ref PublicSubnetASG
       Tags:
         - Key: Name
-          Value: !Ref
+          Value: !Sub '${EnvironmentName} ALB'
   ListenerALB:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -367,9 +367,9 @@ Resources:
           CidrIp: 0.0.0.0/0
       SecurityGroupIngress:
         - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} ASG'
