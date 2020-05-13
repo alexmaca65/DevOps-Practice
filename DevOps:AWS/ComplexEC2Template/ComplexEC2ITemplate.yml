@@ -25,6 +25,9 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  S3BucketName:
+    Type: String
+    Description: Please enter the name of the S3 Bucket
   InstanceType:
     Type: String
     Description: WebServer EC2 instance type
@@ -225,6 +228,7 @@ Resources:
       SecurityGroups:
         - !Ref SecurityGroupALB
       Subnets:
+        - !Ref PublicSubnetEC2
         - !Ref PublicSubnetASG
       Tags:
         - Key: Name
@@ -236,7 +240,19 @@ Resources:
       Protocol: HTTP
       Port: 80
       DefaultActions:
-        Type: forward
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: ALBTargetGroup
+      TargetType: instance
+      VpcId: !Ref MyVPC
+      Protocol: HTTP
+      Port: 80
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} TG'
 #-------( RT ) Route Table Create and Config-------
   RouteTable:
     Type: AWS::EC2::RouteTable
@@ -257,6 +273,11 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref PublicSubnetEC2
+  PublicSubnetASGRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref PublicSubnetASG
 #-------( NACL ) Network ACL Create and Config-------
   NetworkACL:
     Type: AWS::EC2::NetworkAcl
@@ -289,11 +310,16 @@ Resources:
       PortRange:
         From: 0
         To: 65535
-  PublicSubnetNetworkAclAssociation:
+  PublicSubnetEC2NetworkAclAssociation:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     Properties:
       NetworkAclId: !Ref NetworkACL
       SubnetId: !Ref PublicSubnetEC2
+  PublicSubnetASGNetworkAlcAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      SubnetId: !Ref PublicSubnetASG
 #-------SUBNETS-------
   PublicSubnetEC2:
     Type: AWS::EC2::Subnet
@@ -316,7 +342,7 @@ Resources:
         - Key: Name
           Value: !Sub '${EnvironmentName} Public Subnet (AZ2) on ASG'
 #-------( SG ) Security Groups-------
-  SecurityGroupEC2:
+  SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Ref SecurityGroupName
@@ -354,35 +380,17 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} ALB'
-  SecurityGroupASG:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub '${SecurityGroupName} ASG'
-      GroupDescription: Allow HTTP to client host(Use on AutoScaling Group)
-      VpcId: !Ref MyVPC
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Name
-          Value: !Sub '${EnvironmentName} ASG'
 #-------( EC2 ) Instances-------
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       SecurityGroupIds:
-        - !Ref SecurityGroupEC2
+        - !Ref SecurityGroup
       SubnetId: !Ref PublicSubnetEC2
       KeyName: !Ref KeyName
       InstanceType: !Ref InstanceType
       AvailabilityZone: !Select [0, !GetAZs '']
+      Monitoring: False
       ImageId: !FindInMap
         - AWSRegionArch2AMI
         - !Ref AWS::Region
@@ -393,13 +401,58 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} Type 1'
+#-------( ASG ) AutoScaling Group-------
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: ASGTargetGroup
+      DesiredCapacity: 1
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      MinSize: 1
+      MaxSize: 3
+      TargetGroupARNs:
+        - !Ref TargetGroup
+      VPCZoneIdentifier:
+        - !Ref PublicSubnetASG
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} ASG'
+          PropagateAtLaunch: True
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      LaunchConfigurationName: ASGLaunchConfig
+      InstanceType: !Ref InstanceType
+      InstanceMonitoring: False
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref SecurityGroup
+      ImageId: !FindInMap
+        - AWSRegionArch2AMI
+        - !Ref AWS::Region
+        - !FindInMap
+          - AWSInstanceType2Arch
+          - !Ref InstanceType
+          - Arch
+#-------S3 Bucket-------
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3BucketName
+
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Bucket'
 Outputs:
   VPC:
     Description: A reference to the created VPC
     Value: !Ref MyVPC
-  PublicSubnets:
-    Description: A list of the public subnets
+  PublicSubnetEC2:
+    Description: The Public Subnet of EC2 Instance
     Value: !Ref PublicSubnetEC2
+  PublicSubnetASG:
+    Description: The Public Subnet of the Auto Scaling Group
+    Value: !Ref PublicSubnetASG
   InstanceID:
     Description: InstanceId of the newly created EC2 instance
     Value: !Ref EC2Instance
@@ -418,3 +471,6 @@ Outputs:
     Value: !GetAtt
       - EC2Instance
       - PublicIp
+  S3Bucket:
+    Description: S3 Bucket for data storage
+    Value: !Ref S3Bucket
