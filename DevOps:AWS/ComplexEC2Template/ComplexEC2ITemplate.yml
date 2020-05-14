@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  This is a template containing 2 EC2 instances, an Application Load Balancer, S3 Bucket,
-  RedisCache and SNS Trigger Lambda
+  This is a template containing 1 EC2 instance, an AutoScalingGroup,
+  an Application Load Balancer, S3 Bucket and RedisCache
 Parameters:
   EnvironmentName:
     Type: String
@@ -27,7 +27,30 @@ Parameters:
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
   S3BucketName:
     Type: String
-    Description: Please enter the name of the S3 Bucket
+    Description: Please enter the S3 Bucket name. The name must be unique and can contains ONLY lowercase letters, numbers, periods (.), and dashes (-).
+  RedisClusterName:
+    Type: String
+    Description: Please enter the name of the Redis ElastiCache Cluster
+  RedisCacheNodeType:
+    Type: String
+    Description: The compute and memory capacity of the nodes in the node group(shard)
+    Default: cache.t2.micro
+    AllowedValues:
+      - cache.t2.micro
+      - cache.t2.small
+      - cache.t2.medium
+      - cache.t3.micro
+      - cache.t3.small
+      - cache.t3.medium
+      - cache.m3.medium
+      - cache.m3.large
+      - cache.m3.xlarge
+      - cache.m3.2xlarge
+      - cache.r3.large
+      - cache.r3.xlarge
+      - cache.r3.2xlarge
+      - cache.r3.4xlarge
+      - cache.r3.8xlarge
   InstanceType:
     Type: String
     Description: WebServer EC2 instance type
@@ -346,17 +369,20 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Ref SecurityGroupName
-      GroupDescription: Allow HTTP to client host
+      GroupDescription: Enable SSH and HTTP access
       VpcId: !Ref MyVPC
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
@@ -367,11 +393,6 @@ Resources:
       GroupName: !Sub '${SecurityGroupName} ALB'
       GroupDescription: Enable HTTP/HTTPS access
       VpcId: !Ref MyVPC
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -380,6 +401,20 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} ALB'
+  RedisElastiCacheSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: Redis ElastiCache SG
+      GroupDescription: Redis ElastiCache Security Group
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Redis SG'
 #-------( EC2 ) Instances-------
   EC2Instance:
     Type: AWS::EC2::Instance
@@ -424,6 +459,7 @@ Resources:
       LaunchConfigurationName: ASGLaunchConfig
       InstanceType: !Ref InstanceType
       InstanceMonitoring: False
+      AssociatePublicIpAddress: True
       KeyName: !Ref KeyName
       SecurityGroups:
         - !Ref SecurityGroup
@@ -434,15 +470,48 @@ Resources:
           - AWSInstanceType2Arch
           - !Ref InstanceType
           - Arch
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          # Install Apache
+          yum install httpd -y
+          # Start Apace Web Server
+          service httpd start
+          chkconfig httpd on
 #-------S3 Bucket-------
   S3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
     Properties:
       BucketName: !Ref S3BucketName
-
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} Bucket'
+#-------Redis ElastiCache Cluster-------
+  RedisElastiCacheCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      ClusterName: !Ref RedisClusterName
+      Engine: redis
+      EngineVersion: '3.2.4'
+      VpcSecurityGroupIds:
+        - !GetAtt
+          - RedisElastiCacheSecurityGroup
+          - GroupId
+      NumCacheNodes: 1
+      CacheNodeType: !Ref RedisCacheNodeType
+      CacheSubnetGroupName: !Ref RedisECSubnetGroup
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Redis Cluster'
+  RedisECSubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      CacheSubnetGroupName: redis-subnet-group-complex
+      Description: Redis ElastiCache Subnet Group
+      SubnetIds:
+        - !Ref PublicSubnetEC2
 Outputs:
   VPC:
     Description: A reference to the created VPC
@@ -471,6 +540,9 @@ Outputs:
     Value: !GetAtt
       - EC2Instance
       - PublicIp
-  S3Bucket:
+  S3BucketNameInfo:
     Description: S3 Bucket for data storage
     Value: !Ref S3Bucket
+  RedisElastiCacheClusterName:
+    Description: The name of the Redis Cache
+    Value: !Ref RedisElastiCacheCluster
