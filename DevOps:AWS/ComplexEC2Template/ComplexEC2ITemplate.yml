@@ -225,8 +225,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Ref VpcCIDR
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
+      EnableDnsSupport: True
+      EnableDnsHostnames: True
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
@@ -317,7 +317,7 @@ Resources:
       RuleNumber: 100
       RuleAction: allow
       Protocol: -1
-      Egress: false
+      Egress: False
       PortRange:
         From: 0
         To: 65535
@@ -329,7 +329,7 @@ Resources:
       RuleNumber: 100
       RuleAction: allow
       Protocol: -1
-      Egress: true
+      Egress: True
       PortRange:
         From: 0
         To: 65535
@@ -350,7 +350,7 @@ Resources:
       CidrBlock: !Ref PublicSubnetStaticEc2CIDR
       VpcId: !Ref MyVPC
       AvailabilityZone: !Select [0, !GetAZs '']
-      MapPublicIpOnLaunch: true
+      MapPublicIpOnLaunch: True
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} Public Subnet (AZ1)'
@@ -360,7 +360,7 @@ Resources:
       CidrBlock: !Ref PublicSubnetAsgCIDR
       VpcId: !Ref MyVPC
       AvailabilityZone: !Select [1, !GetAZs '']
-      MapPublicIpOnLaunch: true
+      MapPublicIpOnLaunch: True
       Tags:
         - Key: Name
           Value: !Sub '${EnvironmentName} Public Subnet (AZ2) on ASG'
