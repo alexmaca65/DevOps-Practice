@@ -1,0 +1,203 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  This is a template containing 1 EC2 instance, an AutoScalingGroup,
+  an Application Load Balancer, S3 Bucket and RedisCache
+Parameters:
+  EnvironmentName:
+    Type: String
+    Description: An environment name that is prefixed to resource names
+  VpcCIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Default: 10.0.0.0/24
+  PublicSubnetStaticEc2CIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for the Public Subnet wich contains the EC2 instance
+    Default: 10.0.0.0/28
+  SecurityGroupName:
+    Type: String
+    Description: Please enter the name of the Security Group
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  InstanceType:
+    Type: String
+    Description: WebServer EC2 instance type
+    Default: t2.micro
+    AllowedValues:
+      - t1.micro
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+    ConstraintDescription: must be a valid EC2 instance type
+Resources:
+#-------VPC Create-------
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: True
+      EnableDnsHostnames: True
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+#-------( IG ) Internet Gateway Create and Config-------
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref MyVPC
+#-------( RT ) Route Table Create and Config-------
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Public Routes'
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PublicSubnetEC2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref PublicSubnetEC2
+#-------( NACL ) Network ACL Create and Config-------
+  NetworkACL:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InboundNetworkAclEntry:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      CidrBlock: 0.0.0.0/0
+      RuleNumber: 100
+      RuleAction: allow
+      Protocol: -1
+      Egress: False
+      PortRange:
+        From: 0
+        To: 65535
+  OutboundNetworkAclEntry:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      CidrBlock: 0.0.0.0/0
+      RuleNumber: 100
+      RuleAction: allow
+      Protocol: -1
+      Egress: True
+      PortRange:
+        From: 0
+        To: 65535
+  PublicSubnetEC2NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref NetworkACL
+      SubnetId: !Ref PublicSubnetEC2
+#-------SUBNETS-------
+  PublicSubnetEC2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: !Ref PublicSubnetStaticEc2CIDR
+      VpcId: !Ref MyVPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: True
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Public Subnet (AZ1)'
+#-------( SG ) Security Groups-------
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref SecurityGroupName
+      GroupDescription: Enable SSH and HTTP access
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+#-------( EC2 ) Instances-------
+  EC2InstanceMaster:
+    Type: AWS::EC2::Instance
+    Properties:
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      SubnetId: !Ref PublicSubnetEC2
+      KeyName: !Ref KeyName
+      InstanceType: !Ref InstanceType
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Monitoring: False
+      ImageId: ami-085925f297f89fce1
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Master'
+  EC2InstanceAgent:
+    Type: AWS::EC2::Instance
+    Properties:
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      SubnetId: !Ref PublicSubnetEC2
+      KeyName: !Ref KeyName
+      InstanceType: !Ref InstanceType
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Monitoring: False
+      ImageId: ami-085925f297f89fce1
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName} Agent'
+Outputs:
+  VPC:
+    Description: A reference to the created VPC
+    Value: !Ref MyVPC
+  PublicSubnetEC2:
+    Description: The Public Subnet of EC2 Instance
+    Value: !Ref PublicSubnetEC2
+  InstanceID:
+    Description: InstanceId of the newly created EC2 instance
+    Value: !Ref EC2InstanceMaster
+  AZ:
+    Description: Availability Zone of the newly created EC2 instance
+    Value: !GetAtt
+      - EC2InstanceMaster
+      - AvailabilityZone
+  PublicDNS:
+    Description: Public DNSName of the newly created EC2 instance
+    Value: !GetAtt
+      - EC2InstanceMaster
+      - PublicDnsName
+  PublicIP:
+    Description: Public IP address of the newly created EC2 instance
+    Value: !GetAtt
+      - EC2InstanceMaster
+      - PublicIp

@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters: 
+    Environment:
+        Type: String
+        Description: The value of Environment variable
+        Default: Development
+    PackageVersion:
+        Type: String
+        Description: The value of Octopus Deploy package version
+        Default: 0
+
+Resources:
+
+  LambdaIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub
+        - ${NamePrefix}-message-received
+        - NamePrefix: !ImportValue MySecretBabePrefix
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: allowSQS
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+              Resource: !GetAtt SQSqueue.Arn
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchEventsFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/AmazonElasticTranscoder_FullAccess
+
+  LambdaFunction: 
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub
+        - ${NamePrefix}-message-received
+        - NamePrefix: !ImportValue MySecretBabePrefix
+      Handler: GD.MessageWasSent::GD.MessageWasSent.Function::Handler
+      Role: !GetAtt LambdaIamRole.Arn
+      Code:
+        S3Bucket: !ImportValue S3BucketName
+        S3Key: !Sub "GD.MessageReceivedLambda.${PackageVersion}.zip"
+      Runtime: "dotnetcore3.1"
+      Timeout: 120
+      MemorySize: 256
+      Environment:
+        Variables:
+          Environment: !Ref Environment
+
+  InvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref LambdaFunction
+      Principal: "sqs.amazonaws.com"
+      SourceArn: !GetAtt SQSqueue.Arn
+
+  SQSqueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub
+        - ${NamePrefix}-standard-queue-message-received
+        - NamePrefix: !ImportValue MySecretBabePrefix
+      VisibilityTimeout: 120
+      DelaySeconds: 15
+      Tags:
+        - Key: Name
+          Value: !Sub 
+            - '${NamePrefix}-standard-queue'
+            - NamePrefix: !ImportValue MySecretBabePrefix
+
+  LambdaFuncEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      Enabled: True
+      BatchSize: 1
+      EventSourceArn: !GetAtt SQSqueue.Arn
+      FunctionName: !GetAtt LambdaFunction.Arn
+
+  SnsSubscription:
+    Type: AWS::SNS::Subscription
+    Properties: 
+      Endpoint: !GetAtt SQSqueue.Arn
+      Protocol: sqs 
+      TopicArn: !ImportValue mysecretbabe-message-received

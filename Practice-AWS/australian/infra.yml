@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  NamePrefix:
+    Type: String
+    Description: The name prefix for resources
+    Default: mysecretbabe
+
+Outputs:
+  NamePrefixOutput:
+    Value: !Ref NamePrefix
+    Export:
+      Name: MySecretBabePrefix
+  UserCreatedSNSTopicOutput:
+    Value: !Ref UserCreatedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-UserCreatedSNSTopic
+  VideoUploadedSNSTopicOutput:
+    Value: !Ref VideoUploadedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-VideoUploadedSNSTopic
+  VideoTranscodedSNSTopicOutput:
+    Value: !Ref VideoTranscodedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-VideoTranscodedSNSTopic
+  ProfileViewedSNSTopicOutput:
+    Value: !Ref ProfileViewdSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-ProfileViewdSNSTopic
+  AccessRequestedSNSTopicOutput:
+    Value: !Ref AccessRequestedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-AccessRequestedSNSTopic
+  AccessGrantedSNSTopicOutput:
+    Value: !Ref AccessGrantedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-AccessGrantedSNSTopic
+  UserReportedSNSTopicOutput:
+    Value: !Ref UserReportedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-user-reported
+  MessageReceivedSNSTopicOutput:
+    Value: !Ref MessageReceivedSNSTopic
+    Export:
+      Name: !Sub mysecretbabe-message-received
+
+  
+
+Resources:
+  # SNS Stuff
+  UserCreatedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-usercreated
+  
+  VideoUploadedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-video-uploaded
+
+  VideoTranscodedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-video-transcoded
+  
+  ProfileViewdSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-profile-view
+  
+  AccessRequestedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-access-requested
+
+  AccessGrantedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-access-granted
+
+  UserReportedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-user-reported
+
+  MessageReceivedSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub ${NamePrefix}-message-received
+
+  ProfileView: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        
+        - 
+          AttributeName: "FromUserId"
+          AttributeType: "S"
+
+        - 
+          AttributeName: "ToUserId"
+          AttributeType: "S"
+        - 
+          AttributeName: "DateTime"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "ToUserId"
+          KeyType: "HASH"
+        - 
+          AttributeName: "DateTime"
+          KeyType: "RANGE"
+      
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: "ProfileView2"
+      GlobalSecondaryIndexes: 
+        - 
+          IndexName: "FromUser-ToUser"
+          KeySchema: 
+            - 
+              AttributeName: "FromUserId"
+              KeyType: "HASH"
+            - 
+              AttributeName: "ToUserId"
+              KeyType: "RANGE"
+          Projection: 
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "5"
+            WriteCapacityUnits: "5"
+      
