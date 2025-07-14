@@ -33,43 +33,70 @@ variable "ec2_tag_name" {
 }
 
 variable "ec2_subnet_id" {
-  type = string
+  type    = string
   default = "subnet-0664398e44a681065"
 }
 
-
 // Security Groups
 variable "sg_name" {
-  type = string
-  default = "webserver-terraform-sg"
+  type    = string
+  default = "first-webserver-sg-terraform"
 }
 
 variable "sg_description" {
-  type = string
+  type    = string
   default = "Allow HTTP, SSH traffic"
 }
 
 variable "sg_tag_name" {
-  type = string
-  default = "webserver-terraform-sg"
+  type    = string
+  default = "first-webserver-sg-terraform"
 }
 
 variable "sg_ingress_http_description" {
-  type = string
+  type    = string
   default = "Allow HTTP traffic"
 }
 
 variable "sg_ingress_http_tag_name" {
-  type = string
+  type    = string
   default = "allow-http-public"
 }
 
 variable "sg_ingress_ssh_description" {
-  type = string
+  type    = string
   default = "Allow SSH traffic"
 }
 
 variable "sg_ingress_ssh_tag_name" {
-  type = string
+  type    = string
   default = "allow-ssh-global"
 }
+
+// VPC
+variable "vpc_tag_name" {
+  type    = string
+  default = "first-vpc-terraform"
+}
+
+// Subnet
+variable "public_subnet_a_tag_name" {
+  type    = string
+  default = "terraform-public-subnet-a"
+}
+
+variable "public_subnet_b_tag_name" {
+  type    = string
+  default = "terraform-public-subnet-b"
+}
+
+variable "private_subnet_a_tag_name" {
+  type    = string
+  default = "terraform-private-subnet-a"
+}
+
+variable "private_subnet_b_tag_name" {
+  type    = string
+  default = "terraform-private-subnet-b"
+}
+
