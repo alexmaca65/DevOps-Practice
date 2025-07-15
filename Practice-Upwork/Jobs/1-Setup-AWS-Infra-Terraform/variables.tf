@@ -32,11 +32,6 @@ variable "ec2_tag_name" {
   default = "first-webserver-terraform"
 }
 
-variable "ec2_subnet_id" {
-  type    = string
-  default = "subnet-0664398e44a681065"
-}
-
 // Security Groups
 variable "sg_name" {
   type    = string
@@ -100,3 +95,25 @@ variable "private_subnet_b_tag_name" {
   default = "terraform-private-subnet-b"
 }
 
+// Route Table
+variable "public_route_table_tag_name" {
+  type    = string
+  default = "terraform-public-route-table"
+}
+
+variable "private_route_table_tag_name" {
+  type    = string
+  default = "terraform-private-route-table"
+}
+
+// Network ACL
+variable "network_acl_tag_name" {
+  type    = string
+  default = "first-network-acl-terraform"
+}
+
+// Internet Gateway
+variable "internet_gateway_tag_name" {
+  type    = string
+  default = "first-internet-gateway-terraform"
+}

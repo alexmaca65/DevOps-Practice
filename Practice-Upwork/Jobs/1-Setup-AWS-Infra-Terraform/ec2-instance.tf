@@ -1,12 +1,13 @@
 # EC2 Instance
 
+// data source ami
 resource "aws_instance" "ec2_instance" {
   ami           = var.ec2_ami
   instance_type = var.ec2_instance_type
+  user_data     = file("./ec2-user-data.sh")
 
   vpc_security_group_ids = [aws_security_group.sg_ec2_instance.id]
-  subnet_id              = var.ec2_subnet_id
-  //user_data = ""
+  subnet_id              = aws_subnet.public_subnet_a.id
 
   tags = {
     Name      = var.ec2_tag_name
@@ -17,7 +18,7 @@ resource "aws_instance" "ec2_instance" {
 resource "aws_security_group" "sg_ec2_instance" {
   name        = var.sg_name
   description = var.sg_description
-  //vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.custom_vpc.id
 
   tags = {
     Name      = var.sg_tag_name
