@@ -16,15 +16,11 @@ variable "aws_profile" {
   default = "default"
 }
 
-variable "my_ip" {
-  type    = string
+variable "bastion_host_allowed_ip" {
+  description = "IP allowed to SSH into the Bastion Host"
+  type        = string
+  // delete the default to enforce user to type his IP address
   default = "86.121.79.15/32"
-}
-
-// EC2 instance
-variable "ec2_instance_ami" {
-  type    = string
-  default = "ami-05ffe3c48a9991133"
 }
 
 variable "ec2_instance_type" {
@@ -45,7 +41,7 @@ variable "ec2_instance_bastion_host_tag_name" {
 // Security Groups
 variable "sg_internal_webserver_name" {
   type    = string
-  default = "apache-internal-webserver-sg-terraform"
+  default = "terraform-sg-apache-internal-webserver"
 }
 
 variable "sg_internal_webserver_description" {
@@ -55,12 +51,12 @@ variable "sg_internal_webserver_description" {
 
 variable "sg_internal_webserver_tag_name" {
   type    = string
-  default = "apache-internal-webserver-sg-terraform"
+  default = "terraform-sg-apache-internal-webserver"
 }
 
 variable "sg_bastion_host_name" {
   type    = string
-  default = "bastion-host-sg-terraform"
+  default = "terraform-sg-bastion-host"
 }
 
 variable "sg_bastion_host_description" {
@@ -70,7 +66,7 @@ variable "sg_bastion_host_description" {
 
 variable "sg_bastion_host_tag_name" {
   type    = string
-  default = "bastion-host-sg-terraform"
+  default = "terraform-sg-bastion-host"
 }
 
 // Security Group Ingress Rules

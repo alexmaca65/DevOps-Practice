@@ -1,7 +1,7 @@
 #!/bin/bash
+# Script for EC2 Instance User Data
 
-# Script for EC2 User Data
-# Install Apache Webserver (Linux version 3)
+# Install Apache Webserver (for Amazon Linux 2023)
 yum update -y
 yum install -y httpd
 systemctl start httpd
@@ -17,5 +17,3 @@ else
 fi
 
 echo "<h1>Hello world from $(hostname -f) in AZ $EC2_AVAIL_ZONE </h1>" > /var/www/html/index.html
-
-

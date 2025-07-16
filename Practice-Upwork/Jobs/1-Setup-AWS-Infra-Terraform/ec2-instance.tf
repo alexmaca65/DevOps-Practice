@@ -1,11 +1,11 @@
 # EC2 Instance
 
-// data source ami
-
 // EC2 Instances
 resource "aws_instance" "ec2_instance_bastion_host" {
-  ami           = var.ec2_instance_ami
+  ami = data.aws_ami.ami_amazon_linux_2023.id
+  // use t2.micro or t3.micro to be Free Eligible
   instance_type = var.ec2_instance_type
+  user_data     = file("./user-data-scripts/bastion-host-ec2-user-data.sh")
 
   vpc_security_group_ids = [aws_security_group.sg_ec2_instance_bastion_host.id]
   subnet_id              = aws_subnet.public_subnet_a.id
@@ -17,9 +17,9 @@ resource "aws_instance" "ec2_instance_bastion_host" {
 }
 
 resource "aws_instance" "ec2_instance_internal_webserver" {
-  ami           = var.ec2_instance_ami
+  ami           = data.aws_ami.ami_amazon_linux_2023.id
   instance_type = var.ec2_instance_type
-  user_data     = file("./ec2-user-data.sh")
+  user_data     = file("./user-data-scripts/internal-webserver-ec2-user-data.sh")
 
   vpc_security_group_ids = [aws_security_group.sg_ec2_instance_internal_webserver.id]
   subnet_id              = aws_subnet.private_subnet_a.id
@@ -56,9 +56,9 @@ resource "aws_security_group" "sg_ec2_instance_internal_webserver" {
 // Security Group Ingress Rules
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_traffic_bastion_host" {
   description       = var.sg_ingress_bastion_host_ssh_description
-  security_group_id = aws_security_group.sg_ec2_instance_internal_webserver.id
+  security_group_id = aws_security_group.sg_ec2_instance_bastion_host.id
 
-  cidr_ipv4   = var.my_ip
+  cidr_ipv4   = var.bastion_host_allowed_ip
   ip_protocol = "tcp"
   from_port   = 22
   to_port     = 22
@@ -115,11 +115,26 @@ resource "aws_vpc_security_group_ingress_rule" "allow_http_traffic_internal_webs
 }
 
 // Security Group Egress Rules
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic" {
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_internal_webserver" {
   description       = var.sg_egress_general_description
   security_group_id = aws_security_group.sg_ec2_instance_internal_webserver.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = -1 //semantically equivalent to all ports
+
+  tags = {
+    Name = var.sg_egress_general_description
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_bastion_host" {
+  description       = var.sg_egress_general_description
+  security_group_id = aws_security_group.sg_ec2_instance_bastion_host.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = -1 //semantically equivalent to all ports
+
+  tags = {
+    Name = var.sg_egress_general_description
+  }
 }
 
 // Elastic IP
