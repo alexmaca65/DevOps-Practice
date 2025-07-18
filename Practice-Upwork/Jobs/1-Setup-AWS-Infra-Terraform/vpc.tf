@@ -77,6 +77,7 @@ resource "aws_route_table" "public_route_table" {
     cidr_block = aws_vpc.custom_vpc.cidr_block
     gateway_id = "local"
   }
+
   tags = {
     Name      = var.public_route_table_tag_name
     ManagedBy = var.managed_by
@@ -97,6 +98,12 @@ resource "aws_route_table_association" "public_rt_association_b" {
 // Private Route Table
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.custom_vpc.id
+
+  route {
+    // route to nat gw
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.custom_ngw.id
+  }
 
   route {
     // route to local
@@ -163,4 +170,21 @@ resource "aws_internet_gateway" "custom_igw" {
     Name      = var.internet_gateway_tag_name
     ManagedBy = var.managed_by
   }
+}
+
+// NAT Gateway
+resource "aws_nat_gateway" "custom_ngw" {
+  connectivity_type = "public"
+  subnet_id         = aws_subnet.public_subnet_a.id
+  allocation_id     = aws_eip.custom_eip.id
+
+  tags = {
+    Name      = var.nat_gateway_tag_name
+    ManagedBy = var.managed_by
+  }
+
+  depends_on = [
+    aws_internet_gateway.custom_igw,
+    aws_eip.custom_eip
+  ]
 }

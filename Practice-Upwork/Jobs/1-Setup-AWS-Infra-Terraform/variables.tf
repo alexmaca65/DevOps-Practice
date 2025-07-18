@@ -16,10 +16,11 @@ variable "aws_profile" {
   default = "default"
 }
 
-// EC2
-variable "ec2_ami" {
-  type    = string
-  default = "ami-05ffe3c48a9991133"
+variable "bastion_host_allowed_ip" {
+  description = "IP allowed to SSH into the Bastion Host"
+  type        = string
+  // delete the default to enforce user to type his IP address
+  default = "86.121.79.15/32"
 }
 
 variable "ec2_instance_type" {
@@ -27,51 +28,98 @@ variable "ec2_instance_type" {
   default = "t3.micro"
 }
 
-variable "ec2_tag_name" {
+variable "ec2_instance_internal_webserver_tag_name" {
   type    = string
-  default = "first-webserver-terraform"
+  default = "ec2-apache-internal-webserver-terraform"
+}
+
+variable "ec2_instance_bastion_host_tag_name" {
+  type    = string
+  default = "ec2-bastion-host-terraform"
 }
 
 // Security Groups
-variable "sg_name" {
+variable "sg_internal_webserver_name" {
   type    = string
-  default = "first-webserver-sg-terraform"
+  default = "terraform-sg-apache-internal-webserver"
 }
 
-variable "sg_description" {
+variable "sg_internal_webserver_description" {
   type    = string
   default = "Allow HTTP, SSH traffic"
 }
 
-variable "sg_tag_name" {
+variable "sg_internal_webserver_tag_name" {
   type    = string
-  default = "first-webserver-sg-terraform"
+  default = "terraform-sg-apache-internal-webserver"
 }
 
-variable "sg_ingress_http_description" {
+variable "sg_bastion_host_name" {
   type    = string
-  default = "Allow HTTP traffic"
+  default = "terraform-sg-bastion-host"
 }
 
-variable "sg_ingress_http_tag_name" {
+variable "sg_bastion_host_description" {
+  type    = string
+  default = "Allow HTTP, SSH traffic"
+}
+
+variable "sg_bastion_host_tag_name" {
+  type    = string
+  default = "terraform-sg-bastion-host"
+}
+
+// Security Group Ingress Rules
+variable "sg_ingress_bastion_host_ssh_description" {
+  type    = string
+  default = "Allow SSH traffic from my IP only"
+}
+
+variable "sg_ingress_bastion_host_ssh_tag_name" {
+  type    = string
+  default = "allow-ssh-myIP-only"
+}
+
+variable "sg_ingress_internal_webserver_ssh_description" {
+  type    = string
+  default = "Allow SSH only from SG Internal Webserver"
+}
+
+variable "sg_ingress_internal_webserver_ssh_tag_name" {
+  type    = string
+  default = "allow-ssh-sg-internal-webserver-only"
+}
+
+variable "sg_ingress_internal_webserver_icmp_description" {
+  type    = string
+  default = "Allow Ping only from SG Internal Webserver"
+}
+
+variable "sg_ingress_internal_webserver_icmp_tag_name" {
+  type    = string
+  default = "allow icmp-sg-internal-webserver-only"
+}
+
+variable "sg_ingress_internal_webserver_http_description" {
+  type    = string
+  default = "Allow HTTP traffic only from SG Internal Webserver"
+}
+
+variable "sg_ingress_internal_webserver_http_tag_name" {
   type    = string
   default = "allow-http-public"
 }
 
-variable "sg_ingress_ssh_description" {
+// Security Group Egress Rules
+variable "sg_egress_general_description" {
   type    = string
-  default = "Allow SSH traffic"
-}
-
-variable "sg_ingress_ssh_tag_name" {
-  type    = string
-  default = "allow-ssh-global"
+  default = "Allow all traffic"
 }
 
 // VPC
 variable "vpc_tag_name" {
   type    = string
-  default = "first-vpc-terraform"
+  default = "vpc-terraform"
 }
 
 // Subnet
@@ -109,11 +157,23 @@ variable "private_route_table_tag_name" {
 // Network ACL
 variable "network_acl_tag_name" {
   type    = string
-  default = "first-network-acl-terraform"
+  default = "network-acl-terraform"
 }
 
 // Internet Gateway
 variable "internet_gateway_tag_name" {
   type    = string
-  default = "first-internet-gateway-terraform"
+  default = "internet-gateway-terraform"
+}
+
+// NAT Gateway
+variable "nat_gateway_tag_name" {
+  type    = string
+  default = "nat-gateway-terraform"
+}
+
+// Elastic IP
+variable "elastic_ip_tag_name" {
+  type    = string
+  default = "eip-nat-gateway-terraform"
 }
