@@ -1,5 +1,11 @@
 #!/bin/bash
-# Script for EC2 Instance User Data (for Amazon Linux 2023)
+# Script for EC2 Instance User Data
+
+# Install nginx Webserver (for Amazon Linux 2023)
+dnf upgrade --refresh
+dnf install -y nginx
+systemctl start nginx
+systemctl enable nginx
 
 # Create a new user and add the SSH Public Key
 #  Create a new user

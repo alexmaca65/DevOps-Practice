@@ -1,5 +1,15 @@
 # EC2 Instance
 
+// Locals
+locals {
+  security_group_ids_map = {
+    sg_bastion_host_id    = aws_security_group.sg_ec2_instance_bastion_host.id,
+    sg_internal_server_id = aws_security_group.sg_ec2_instance_internal_webserver.id,
+    sg_alb_id             = aws_security_group.sg_alb.id,
+    sg_lt_webserver_id    = aws_security_group.sg_lt_webserver.id
+  }
+}
+
 // EC2 Instances
 resource "aws_instance" "ec2_instance_bastion_host" {
   ami = data.aws_ami.ami_amazon_linux_2023.id
@@ -37,7 +47,7 @@ resource "aws_security_group" "sg_ec2_instance_bastion_host" {
   vpc_id      = aws_vpc.custom_vpc.id
 
   tags = {
-    Name      = var.sg_bastion_host_tag_name
+    Name      = var.sg_bastion_host_name
     ManagedBy = var.managed_by
   }
 }
@@ -48,7 +58,7 @@ resource "aws_security_group" "sg_ec2_instance_internal_webserver" {
   vpc_id      = aws_vpc.custom_vpc.id
 
   tags = {
-    Name      = var.sg_internal_webserver_tag_name
+    Name      = var.sg_internal_webserver_name
     ManagedBy = var.managed_by
   }
 }
@@ -58,7 +68,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_traffic_bastion_host" 
   description       = var.sg_ingress_bastion_host_ssh_description
   security_group_id = aws_security_group.sg_ec2_instance_bastion_host.id
 
-  cidr_ipv4   = var.bastion_host_allowed_ip
+  cidr_ipv4   = var.ssh_allowed_ip
   ip_protocol = "tcp"
   from_port   = 22
   to_port     = 22
@@ -115,20 +125,18 @@ resource "aws_vpc_security_group_ingress_rule" "allow_http_traffic_internal_webs
 }
 
 // Security Group Egress Rules
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_internal_webserver" {
-  description       = var.sg_egress_general_description
-  security_group_id = aws_security_group.sg_ec2_instance_internal_webserver.id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = -1 //semantically equivalent to all ports
+resource "aws_vpc_security_group_egress_rule" "outbound_allow_all_traffic_general" {
+  depends_on = [
+    aws_security_group.sg_ec2_instance_bastion_host,
+    aws_security_group.sg_ec2_instance_internal_webserver,
+    aws_security_group.sg_alb,
+    aws_security_group.sg_lt_webserver
+  ]
 
-  tags = {
-    Name = var.sg_egress_general_description
-  }
-}
+  for_each = local.security_group_ids_map
 
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_bastion_host" {
   description       = var.sg_egress_general_description
-  security_group_id = aws_security_group.sg_ec2_instance_bastion_host.id
+  security_group_id = each.value
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = -1 //semantically equivalent to all ports
 
