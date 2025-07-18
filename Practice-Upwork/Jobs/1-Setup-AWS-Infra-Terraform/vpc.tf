@@ -174,6 +174,11 @@ resource "aws_internet_gateway" "custom_igw" {
 
 // NAT Gateway
 resource "aws_nat_gateway" "custom_ngw" {
+  depends_on = [
+    aws_internet_gateway.custom_igw,
+    aws_eip.custom_eip
+  ]
+
   connectivity_type = "public"
   subnet_id         = aws_subnet.public_subnet_a.id
   allocation_id     = aws_eip.custom_eip.id
@@ -182,9 +187,4 @@ resource "aws_nat_gateway" "custom_ngw" {
     Name      = var.nat_gateway_tag_name
     ManagedBy = var.managed_by
   }
-
-  depends_on = [
-    aws_internet_gateway.custom_igw,
-    aws_eip.custom_eip
-  ]
 }
