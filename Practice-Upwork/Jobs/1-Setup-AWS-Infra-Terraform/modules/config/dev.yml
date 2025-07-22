@@ -1,0 +1,44 @@
+# Dev Environmnet
+
+# AWS & Terraform
+aws_region: "us-east-1"
+aws_profile: "default"
+managed_by: "Terragrunt"
+
+# EC2 Instance
+ssh_allowed_ip: "0.0.0.0/0"
+ec2_instance_type: "t3.micro"
+
+# Security Groups
+sg_internal_webserver_description: "Allow HTTP, SSH traffic from Bastion Host"
+sg_bastion_host_description: "Allow SSH traffic"
+sg_alb_description: "Allow HTTP traffic into ALB"
+sg_lt_webserver_description: "Allow HTTP, SSH traffic"
+
+# Security Group Rules
+sg_ingress_bastion_host_ssh_tag_name: "allow-SSH-myIP-only"
+sg_ingress_bastion_host_ssh_description: "Allow SSH traffic from my IP only"
+
+sg_ingress_internal_webserver_ssh_tag_name: "allow-SSH-sg-bastion-host-only"
+sg_ingress_internal_webserver_ssh_description: "Allow SSH only from SG Bastion Host"
+
+sg_ingress_internal_webserver_icmp_tag_name: "allow-ICMP-sg-bastion-host-only"
+sg_ingress_internal_webserver_icmp_description: "Allow Ping only from SG Bastion Host"
+
+sg_ingress_internal_webserver_http_tag_name: "allow-HTTP-sg-bastion-host-only"
+sg_ingress_internal_webserver_http_description: "Allow HTTP traffic only from SG Bastion Host"
+
+sg_ingress_alb_http_tag_name: "allow-HTTP-public"
+sg_ingress_alb_http_description: "Allow HTTP traffic into ALB"
+
+sg_ingress_lt_http_tag_name: "allow-HTTP-sg-alb-only"
+sg_ingress_lt_http_description: "Allow HTTP traffic only from ALB"
+
+sg_ingress_lt_ssh_tag_name: "allow-SSH-myIP-only"
+sg_ingress_lt_ssh_description: "Allow SSH traffic from my IP only"
+
+# Security Group Egress Rule
+sg_egress_general_description: "Allow all traffic"
+
+# Launch Template
+launch_template_description: "Launch Template for the Public Webserver"
