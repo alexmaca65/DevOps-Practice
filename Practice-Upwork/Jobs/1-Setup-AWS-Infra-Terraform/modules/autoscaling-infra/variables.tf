@@ -6,16 +6,17 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "managed_by" {
-  type    = string
-  default = "Terraform"
-}
-
 variable "aws_profile" {
   type    = string
   default = "default"
 }
 
+variable "managed_by" {
+  type    = string
+  default = "Terraform"
+}
+
+// EC2 instance
 variable "ssh_allowed_ip" {
   description = "IP allowed to SSH into infra"
   type        = string
@@ -81,19 +82,14 @@ variable "sg_lt_webserver_description" {
 }
 
 // Security Group Ingress Rules
-variable "sg_ingress_bastion_host_ssh_description" {
-  type    = string
-  default = "Allow SSH traffic from my IP only"
-}
-
 variable "sg_ingress_bastion_host_ssh_tag_name" {
   type    = string
   default = "allow-SSH-myIP-only"
 }
 
-variable "sg_ingress_internal_webserver_ssh_description" {
+variable "sg_ingress_bastion_host_ssh_description" {
   type    = string
-  default = "Allow SSH only from SG Bastion Host"
+  default = "Allow SSH traffic from my IP only"
 }
 
 variable "sg_ingress_internal_webserver_ssh_tag_name" {
@@ -101,9 +97,9 @@ variable "sg_ingress_internal_webserver_ssh_tag_name" {
   default = "allow-SSH-sg-bastion-host-only"
 }
 
-variable "sg_ingress_internal_webserver_icmp_description" {
+variable "sg_ingress_internal_webserver_ssh_description" {
   type    = string
-  default = "Allow Ping only from SG Bastion Host"
+  default = "Allow SSH only from SG Bastion Host"
 }
 
 variable "sg_ingress_internal_webserver_icmp_tag_name" {
@@ -111,9 +107,9 @@ variable "sg_ingress_internal_webserver_icmp_tag_name" {
   default = "allow-ICMP-sg-bastion-host-only"
 }
 
-variable "sg_ingress_internal_webserver_http_description" {
+variable "sg_ingress_internal_webserver_icmp_description" {
   type    = string
-  default = "Allow HTTP traffic only from SG Bastion Host"
+  default = "Allow Ping only from SG Bastion Host"
 }
 
 variable "sg_ingress_internal_webserver_http_tag_name" {
@@ -121,9 +117,9 @@ variable "sg_ingress_internal_webserver_http_tag_name" {
   default = "allow-HTTP-sg-bastion-host-only"
 }
 
-variable "sg_ingress_alb_http_description" {
+variable "sg_ingress_internal_webserver_http_description" {
   type    = string
-  default = "Allow HTTP traffic into ALB"
+  default = "Allow HTTP traffic only from SG Bastion Host"
 }
 
 variable "sg_ingress_alb_http_tag_name" {
@@ -131,9 +127,9 @@ variable "sg_ingress_alb_http_tag_name" {
   default = "allow-HTTP-public"
 }
 
-variable "sg_ingress_lt_http_description" {
+variable "sg_ingress_alb_http_description" {
   type    = string
-  default = "Allow HTTP traffic only from ALB"
+  default = "Allow HTTP traffic into ALB"
 }
 
 variable "sg_ingress_lt_http_tag_name" {
@@ -141,14 +137,19 @@ variable "sg_ingress_lt_http_tag_name" {
   default = "allow-HTTP-sg-alb-only"
 }
 
-variable "sg_ingress_lt_ssh_description" {
+variable "sg_ingress_lt_http_description" {
   type    = string
-  default = "Allow SSH traffic from my IP only"
+  default = "Allow HTTP traffic only from ALB"
 }
 
 variable "sg_ingress_lt_ssh_tag_name" {
   type    = string
   default = "allow-SSH-myIP-only"
+}
+
+variable "sg_ingress_lt_ssh_description" {
+  type    = string
+  default = "Allow SSH traffic from my IP only"
 }
 
 // Security Group Egress Rule
