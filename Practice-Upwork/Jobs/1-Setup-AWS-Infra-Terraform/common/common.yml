@@ -1,0 +1,7 @@
+# Common variables values
+
+name: alex
+aws_region: "us-east-1"
+aws_profile: "default"
+managed_by: "Terragrunt"
+ssh_allowed_ip: "0.0.0.0/0" # "86.121.79.15/32"
