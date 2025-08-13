@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# AWS_DEFAULT_REGION="us-east-1"
+# AWS_ACCESS_KEY_ID=""
+# AWS_SECRET_ACCESS_KEY=""
+
+NAMESPACE="php-fpm"
+TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
+SERVER_STATUS_URL="http://localhost/status?json"
+
+# GET /php-fpm-status
+RESPONSE=$(curl -L "${SERVER_STATUS_URL}")
+
+# Parse Response to vars
+POOL=$(echo $RESPONSE | jq '.pool')
+echo "${POOL}"
+PROCESS_MANAGER=$(echo $RESPONSE | jq --raw-output '."process manager"')
+echo "${PROCESS_MANAGER}"
+START_TIME=$(echo $RESPONSE | jq --raw-output '."start time"')
+echo "${START_TIME}"
+START_SINCE=$(echo $RESPONSE | jq --raw-output '."start since"')
+echo "${START_SINCE}"
+ACCEPTED_CONN=$(echo $RESPONSE | jq --raw-output '."accepted conn"')
+echo "${ACCEPTED_CONN}"
+LISTEN_QUEUE=$(echo $RESPONSE | jq --raw-output '."listen queue"')
+echo "${LISTEN_QUEUE}"
+MAX_LISTEN_QUEUE=$(echo $RESPONSE | jq --raw-output '."max listen queue"')
+echo "${MAX_LISTEN_QUEUE}"
+
+LISTEN_QUEUE_LEN=$(echo $RESPONSE | jq --raw-output '."listen queue len"')
+echo "${LISTEN_QUEUE_LEN}"
+IDLE_PROCESSES=$(echo $RESPONSE | jq --raw-output '."idle processes"')
+echo "${IDLE_PROCESSES}"
+ACTIVE_PROCESSES=$(echo $RESPONSE | jq --raw-output '."active processes"')
+echo "${ACTIVE_PROCESSES}"
+TOTAL_PROCESSES=$(echo $RESPONSE | jq --raw-output '."total processes"')
+echo "${TOTAL_PROCESSES}"
+MAX_ACTIVE_PROCESSES=$(echo $RESPONSE | jq --raw-output '."max active processes"')
+echo "${MAX_ACTIVE_PROCESSES}"
+MAX_CHILDREN_REACHED=$(echo $RESPONSE | jq --raw-output '."max children reached"')
+echo "${MAX_CHILDREN_REACHED}"
+SLOW_REQUESTS=$(echo $RESPONSE | jq --raw-output '."slow requests"')
+echo "${SLOW_REQUESTS}"
+
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name Pool --value ${POOL} --dimensions MyDimension=${POOL}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name ProcessManager --value ${PROCESS_MANAGER} --dimensions MyDimension=${PROCESS_MANAGER}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name StartTime --value ${START_TIME} --dimensions MyDimension=${START_TIME}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name StartSince --value ${START_SINCE} --dimensions MyDimension=${START_SINCE}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name AcceptedConn --value ${ACCEPTED_CONN} --dimensions MyDimension=${ACCEPTED_CONN}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name ListenQueue --value ${LISTEN_QUEUE} --dimensions MyDimension=${LISTEN_QUEUE}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name MaxListenQueue --value ${MAX_LISTEN_QUEUE} --dimensions MyDimension=${MAX_LISTEN_QUEUE}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name ListenQueueLen --value ${LISTEN_QUEUE_LEN} --dimensions MyDimension=${LISTEN_QUEUE_LEN}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name IdleProcesses --value ${IDLE_PROCESSES} --dimensions MyDimension=${IDLE_PROCESSES}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name ActiveProcesses --value ${ACTIVE_PROCESSES} --dimensions MyDimension=${ACTIVE_PROCESSES}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name TotalProcesses --value ${TOTAL_PROCESSES} --dimensions MyDimension=${TOTAL_PROCESSES}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name MaxActiveProcesses --value ${MAX_ACTIVE_PROCESSES} --dimensions MyDimension=${MAX_ACTIVE_PROCESSES}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name MaxChildrenReached --value ${MAX_CHILDREN_REACHED} --dimensions MyDimension=${MAX_CHILDREN_REACHED}
+/usr/local/bin/aws cloudwatch put-metric-data --region ${AWS_DEFAULT_REGION} --namespace ${NAMESPACE} --timestamp ${TIMESTAMP} --metric-name SlowRequests --value ${SLOW_REQUESTS} --dimensions MyDimension=${SLOW_REQUESTS}
+
+
+
+* * * * * sh opt/cw-phpfpm-status.sh > /opt/crontab-log
+
