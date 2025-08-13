@@ -1,6 +1,7 @@
 ## Project Structure:
 
-1-Setup-AWS-Infra-Terraform/
+'''
+AWS-Core-Architecture/
 ├── root.hcl                  # ✅ Root config
 ├── a-autoscaling-infra/
 │   ├── config-vars.yml       # ✅ includes "root"
@@ -27,6 +28,7 @@
 │       ├── outputs.tf
 │       └── variables.tf
 └── README.md
+'''
 
 
 ## Issues encountered:
@@ -54,6 +56,6 @@
 * ansible
 * terraform
 * jenkins
-** vars
-** src
-** resources
+* vars
+* src
+* resources
