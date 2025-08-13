@@ -1,6 +1,6 @@
 ## Project Structure:
 
-'''
+```
 AWS-Core-Architecture/
 ├── root.hcl                  # ✅ Root config
 ├── a-autoscaling-infra/
@@ -28,7 +28,7 @@ AWS-Core-Architecture/
 │       ├── outputs.tf
 │       └── variables.tf
 └── README.md
-'''
+```
 
 
 ## Issues encountered:
