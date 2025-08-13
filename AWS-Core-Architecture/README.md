@@ -1,4 +1,4 @@
-Project Structure:
+## Project Structure:
 
 1-Setup-AWS-Infra-Terraform/
 ├── root.hcl                  # ✅ Root config
@@ -29,15 +29,15 @@ Project Structure:
 └── README.md
 
 
-Issues encountered:
+## Issues encountered:
 
-1. Generate provider or remote_state blocks in common.hcl
+# 1. Generate provider or remote_state blocks in common.hcl
     - Do not move provider or remote_state blocks to common.hcl as it doesn't support include context.
     - When using read_terragrunt_config(), common.hcl is only read — it doesn't pass include context. So functions like path_relative_to_include() will return "." and state paths will break.
     - generate only works if the file is included as part of the Terragrunt hierarchy (e.g., root.hcl), not just read with read_terragrunt_config().
     - read_terragrunt_config() → only loads locals and inputs, but ignores generate, remote_state, and dependency blocks.
 
-2. Expose attribute on include
+# 2. Expose attribute on include
     - include "root" needs expose = true to share locals
     - By default, locals defined in an included file are not exposed to the including file. If you want to expose them, you must set expose = true in the include block.
   Error type given:
@@ -49,7 +49,7 @@ Issues encountered:
     }
 
 
-Structure should be:
+## Structure should be:
 
 * ansible
 * terraform
