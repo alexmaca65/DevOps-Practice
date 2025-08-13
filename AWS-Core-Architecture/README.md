@@ -44,12 +44,12 @@ AWS-Core-Architecture/
 * By default, locals defined in an included file are not exposed to the including file. If you want to expose them, you must set expose = true in the include block.
 Error type given:
   [Partial] Included config ./root.hcl has strategy shallow merge: merging config in (shallow).
-
+```
 include "root" {
   path   = find_in_parent_folders("root.hcl")
   expose = true
 }
-
+```
 
 ## Structure should be:
 
