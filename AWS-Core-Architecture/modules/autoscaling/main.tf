@@ -6,7 +6,7 @@
     - Security Group Egress Rules
 */
 
-//Terraform Configuration
+// Terraform Configuration
 terraform {
   backend "s3" {}
 }

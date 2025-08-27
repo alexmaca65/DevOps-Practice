@@ -4,7 +4,7 @@
     - Subnets
 */
 
-//Terraform Configuration
+// Terraform Configuration
 terraform {
   backend "s3" {}
 }

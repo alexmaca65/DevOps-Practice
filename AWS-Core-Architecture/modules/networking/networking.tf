@@ -74,7 +74,7 @@ resource "aws_route_table_association" "private_rt_association_b" {
 }
 
 // Network ACL
-resource "aws_network_acl" "name" {
+resource "aws_network_acl" "main_network_acl" {
   vpc_id = aws_vpc.custom_vpc.id
   subnet_ids = [
     aws_subnet.public_subnet_a.id,
