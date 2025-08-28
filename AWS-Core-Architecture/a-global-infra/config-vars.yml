@@ -1,0 +1,4 @@
+# Config Variables
+
+# Resource-Groups Group
+resource_group_description: "Main Group for AWS Core Infra"
