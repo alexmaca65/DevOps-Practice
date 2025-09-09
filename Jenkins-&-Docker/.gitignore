@@ -1,0 +1,12 @@
+# macOS system file
+.DS_Store
+
+# Jenkins Server folder
+jenkins_home/
+
+docker-container-ubuntu/remote-key
+docker-container-ubuntu/remote-key.pub
+
+# IDE-specific (optional, if using VSCode or IntelliJ etc.)
+.vscode/
+.idea/
