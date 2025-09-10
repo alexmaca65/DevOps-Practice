@@ -51,6 +51,7 @@ include "root" {
 }
 ```
 
+
 ## Structure should be:
 
 * ansible
