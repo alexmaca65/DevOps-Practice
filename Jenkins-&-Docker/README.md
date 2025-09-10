@@ -1,5 +1,4 @@
 # Project for Learning Jenkins
-
 * The scope of project is learning Jenkins by following the course on Udemy: Jenkins, From Zero to Hero: Become a DevOps Jenkins Master
 * Course Link: https://www.udemy.com/course/jenkins-from-zero-to-hero/learn/lecture/19367702#overview
 
