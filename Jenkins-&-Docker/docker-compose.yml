@@ -13,6 +13,8 @@ services:
     image: remote-host #image name (built locally)
     build:
       context: docker-container-ubuntu # build context(folder) for Dockerfile
+    volumes:
+      - "${PWD}/public_remote_host_data:/tmp/persistent-data"
     networks:
       - net
   db_host:

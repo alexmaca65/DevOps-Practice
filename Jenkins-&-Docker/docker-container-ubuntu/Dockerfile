@@ -41,6 +41,9 @@ RUN apt-get install -y unzip curl && \
   rm -rf awscliv2.zip aws && \
   rm -rf /var/lib/apt/lists/*
 
+# Install VIM Editor
+RUN apt-get update && apt-get install -y vim
+
 CMD /usr/sbin/sshd -D
 
 
