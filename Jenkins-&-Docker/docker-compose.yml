@@ -3,18 +3,27 @@ services:
     container_name: jenkins
     image: jenkins/jenkins:lts-jdk21
     ports:
-      - "8080:8080"
+      - "8080:8080" # Expose Jenkins UI on jost:port 8080 
     volumes:
-      - "${PWD}/jenkins_home:/var/jenkins_home"
+      - "${PWD}/jenkins_home:/var/jenkins_home" # bind mount for Jenkins persistent data
     networks:
-      - net
+      - net # attach Jenkins to the custom network
   remote_host:
     container_name: remote-host
-    image: remote-host
+    image: remote-host #image name (built locally)
     build:
-      context: docker-container-ubuntu
+      context: docker-container-ubuntu # build context(folder) for Dockerfile
     networks:
       - net
-      
+  db_host:
+    container_name: db-host
+    image: mysql:9.4
+    environment:
+      MYSQL_ROOT_PASSWORD: test1234
+    volumes:
+      - "${PWD}/db_data:/var/lib/mysql"
+    networks:
+      - net
+
 networks:
-  net:
+  net: # user-defined bridge network

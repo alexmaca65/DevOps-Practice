@@ -29,6 +29,18 @@ RUN chmod 600 /home/remote_user/.ssh/authorized_keys && \
 # Generate host keys
 RUN ssh-keygen -A
 
+# Install MySQL Client to connect to db-host container
+RUN apt-get update && \
+  apt-get install -y mysql-client
+
+# Install Curl then AWS CLI v2 and then cleanup cache
+RUN apt-get install -y unzip curl && \
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
+  unzip awscliv2.zip && \
+  ./aws/install && \
+  rm -rf awscliv2.zip aws && \
+  rm -rf /var/lib/apt/lists/*
+
 CMD /usr/sbin/sshd -D
 
 

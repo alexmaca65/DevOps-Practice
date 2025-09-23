@@ -1,12 +1,16 @@
 # macOS system file
 .DS_Store
 
-# Jenkins Server folder
+# Jenkins Server data folder
 jenkins_home/
+
+# MySQL Container data folder
+db_data/
 
 docker-container-ubuntu/remote-key
 docker-container-ubuntu/remote-key.pub
 
-# IDE-specific (optional, if using VSCode or IntelliJ etc.)
+# IDE-specific (optional, if using VSCode or IntelliJ etc.) and GitGuardian Shield
 .vscode/
 .idea/
+.cache_ggshield
