@@ -21,7 +21,7 @@ services:
     container_name: db-host
     image: mysql:9.4
     environment:
-      MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - "${PWD}/db_data:/var/lib/mysql"
     networks:

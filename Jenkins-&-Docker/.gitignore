@@ -4,6 +4,9 @@
 # Jenkins Server data folder
 jenkins_home/
 
+# Secrets Env Vars
+.env
+
 # MySQL Container data folder
 db_data/
 
