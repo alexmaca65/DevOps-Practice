@@ -10,9 +10,13 @@ RUN mkdir -p /var/run/sshd && \
   chmod 755 /var/run/sshd && \
   chown root:root /var/run/sshd
 
+# Declare build args
+ARG USER_NAME
+ARG USER_PASSWORD
+
 # Create a new user with home directory and bash shell
 RUN useradd remote_user -m -s /bin/bash && \
-  echo "remote_user:pass123" | chpasswd
+  echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd
 
 # Create SSH folders and give permissions
 RUN mkdir -p /home/remote_user/.ssh && \

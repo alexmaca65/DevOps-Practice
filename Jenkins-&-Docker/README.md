@@ -40,3 +40,7 @@
   - Install VIM, Curl then AWS CLI v2
   - add the bash script as Volume of the container
 * automate this by creating the Jenkins job to take the Backup and upload it to AWS S3 Bucket
+
+## S6 - Jenkins & Ansible
+* Description: 
+* 

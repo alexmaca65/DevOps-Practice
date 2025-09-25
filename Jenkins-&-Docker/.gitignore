@@ -7,11 +7,15 @@ jenkins_home/
 # Secrets Env Vars
 .env
 
-# MySQL Container data folder
+# Docker Container MySQL
 db_data/
 
+# Docker Container Jenkins
 docker-container-ubuntu/remote-key
 docker-container-ubuntu/remote-key.pub
+
+# Docker Container Ansible
+docker-container-ansible-jenkins/remote-key
 
 # IDE-specific (optional, if using VSCode or IntelliJ etc.) and GitGuardian Shield
 .vscode/
