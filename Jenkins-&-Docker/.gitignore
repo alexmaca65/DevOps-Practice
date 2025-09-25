@@ -11,8 +11,8 @@ jenkins_home/
 db_data/
 
 # Docker Container Jenkins
-docker-container-ubuntu/remote-key
-docker-container-ubuntu/remote-key.pub
+docker-container-jenkins/remote-key
+docker-container-jenkins/remote-key.pub
 
 # Docker Container Ansible
 docker-container-ansible-jenkins/remote-key
