@@ -49,6 +49,3 @@ RUN apt-get install -y unzip curl && \
 RUN apt-get update && apt-get install -y vim
 
 CMD /usr/sbin/sshd -D
-
-
-

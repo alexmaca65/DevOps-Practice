@@ -3,6 +3,44 @@
 * Course Link: https://www.udemy.com/course/jenkins-from-zero-to-hero/learn/lecture/19367702#overview
 
 
+# Project Structure:
+
+<pre>
+Jenkins-and-Docker/
+├── data_volumes/
+│   ├── db_data/
+│   ├── jenkins_home/
+│   └── public_remote_host_data/
+│       └── backup-upload-s3.sh
+│
+├── docker-containers/
+│   ├── base-jenkins-container/
+│   │   ├── Dockerfile
+│   │   ├── people.txt
+│   │   ├── push-data-db.sh
+│   │   ├── remote-key
+│   │   ├── remote-key.pub
+│   │   └── script.sh
+│   │
+│   ├── jenkins-ansible-container/
+│   │   ├── ansible-files/
+│   │   │   ├── inventory.ini
+│   │   │   └── my_first_playbook.yml
+│   │   ├── Dockerfile
+│   │   └── remote-key
+│   │
+│   └── web-ansible-container/
+│       ├── Dockerfile
+│       └── README.md
+│
+├── .cache_ggshield
+├── .env
+├── .gitignore
+├── docker-compose.yml
+└── README.md
+</pre>
+
+
 # Issues encountered:
 
 ## 1. When rename parent folder - Jenkins reset
@@ -42,5 +80,11 @@
 * automate this by creating the Jenkins job to take the Backup and upload it to AWS S3 Bucket
 
 ## S6 - Jenkins & Ansible
-* Description: 
-* 
+* Description -> Complete the Challenge:
+  - setup a Jenkins job that lets you select an age value
+  - using Docker, create a MySQL Database to store a list of people along with their ages
+  - with Ansible, we'll dynamically genereate a PHP file that displays only the people whose age matches the value chosen in Jenkins.
+* build a new Docker Image based on a new Dockerfile which is isntalled Ansible and Ping
+* create and run an Ansible Playbook with Inventory and then integrate Ansible and Jenkins
+* on MySQL container create a new People Database with a new Table
+* create a Bash script to populate the Table
