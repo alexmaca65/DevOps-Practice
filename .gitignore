@@ -53,8 +53,8 @@ override.tf.json
 .env
 
 # Data Volumes --> Jenkins server data and MySQL data container
-Jenkins-and-Docker/data_volumes/jenkins_home/
-Jenkins-and-Docker/data_volumes/db_data/ 
+Jenkins-and-Docker/data-volumes/jenkins-home/
+Jenkins-and-Docker/data-volumes/db-data/ 
 
 # Jenkins Docker Container 
 Jenkins-and-Docker/docker-containers/base-jenkins-container/remote-key
