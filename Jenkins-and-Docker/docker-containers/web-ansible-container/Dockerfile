@@ -13,6 +13,7 @@ RUN apt-get update && \
   ln -fs /usr/share/zoneinfo/$TZ /etc/localtime &&\
   dpkg-reconfigure -f noninteractive tzdata && \
   apt-get install -y \
+    sudo \
     nginx \
     php-fpm \
     php-cli \
@@ -29,8 +30,16 @@ RUN apt-get update && \
 # Expose HTTP (80) and HTTPS (443) ports
 EXPOSE 80 443
 
-COPY ./webserver-config/nginx.conf /etc/nginx/conf.d/default.conf
+# Create a deploy user and allow passwordless sudo
+RUN echo "remote_user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/remote_user && \
+  chmod 440 /etc/sudoers.d/remote_user
 
+# Copy nginx config, index.php and start-services script
+COPY ./webserver-config/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./webserver-config/index.php /var/www/html/index.php
 COPY ./webserver-config/start.sh /start.sh
+COPY ./webserver-config/table.j2 /var/www/html/index.php
 
 RUN chmod +x /start.sh
+
+CMD /start.sh

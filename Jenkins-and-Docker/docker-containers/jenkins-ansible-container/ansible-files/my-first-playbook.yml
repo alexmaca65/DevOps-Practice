@@ -1,12 +1,12 @@
 ---
 - name: Play Nr.1 - Display text and save it to new ansible-file
   hosts: remote_host_webservers
-  
+
   tasks:
     - name: Task 1 - Show message
       debug:
         msg: "{{ Message }}"
-    
+
     - name: Task 2 - Save the text to new file
       shell: echo Hello World from Ansible and Jenkins > /tmp/new-ansible-file
 
