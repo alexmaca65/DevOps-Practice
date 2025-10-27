@@ -52,6 +52,9 @@ override.tf.json
 # Secrets Env Vars
 .env
 
+# Ansible cache
+.ansible/
+
 # Data Volumes --> Jenkins server data and MySQL data container
 Jenkins-and-Docker/data-volumes/jenkins-home/
 Jenkins-and-Docker/data-volumes/db-data/ 
