@@ -1,0 +1,45 @@
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins-ansible
+    build:
+      context: docker-containers/jenkins-ansible-container
+    ports:
+      - "8080:8080" # Expose Jenkins UI on jost:port 8080 
+    volumes:
+      - "${PWD}/data-volumes/jenkins-home:/var/jenkins_home" # bind mount for Jenkins persistent data
+    networks:
+      - net # attach Jenkins to the custom network
+  remote_host:
+    container_name: remote-host
+    image: remote-host #image name (built locally)
+    build:
+      context: docker-containers/base-jenkins-container # build context(folder) for Dockerfile
+      args:
+        USER_NAME: ${USER_NAME}
+        USER_PASSWORD: ${USER_PASSWORD}
+    volumes:
+      - "${PWD}/data-volumes/public-remote-host-data:/tmp/persistent-data"
+    networks:
+      - net
+  db_host:
+    container_name: db-host
+    image: mysql:9.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - "${PWD}/data-volumes/db-data:/var/lib/mysql"
+    networks:
+      - net
+  webserver_ansible:
+    container_name: web-ansible
+    image: web-ansible
+    build:
+      context: docker-containers/web-ansible-container
+    ports:
+      - "80:80"
+    networks:
+      - net
+    
+networks:
+  net: # user-defined bridge network

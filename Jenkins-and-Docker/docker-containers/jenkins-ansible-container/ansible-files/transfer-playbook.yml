@@ -1,0 +1,21 @@
+---
+- name: Play - Transfer file from source to destination
+  hosts: webserver_ansible1
+  become: true
+
+  tasks:
+    - name: Change owner from root to remote_user
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        owner: remote_user
+        group: remote_user
+        mode: '0755'
+
+    - name: Task - Transfer template table.j2 to the web-ansible container
+      ansible.builtin.template:
+        src: table.j2
+        dest: /var/www/html/index.php
+        owner: remote_user
+        group: remote_user
+        mode: '0644'

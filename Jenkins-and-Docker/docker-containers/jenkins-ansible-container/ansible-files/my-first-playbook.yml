@@ -1,0 +1,27 @@
+---
+- name: Play Nr.1 - Display text and save it to new ansible-file
+  hosts: remote_host_webservers
+
+  vars:
+    message: "Hello World from Ansible and Jenkins" # default so debug won't fail
+
+  tasks:
+    - name: Task 1 - Show message
+      ansible.builtin.debug:
+        msg: "{{ message }}"
+
+    - name: Task 2 - Save the text to new file
+      ansible.builtin.copy:
+        dest: /tmp/new-ansible-file
+        content: "{{ message }}"
+        mode: '0644'
+
+- name: Play Nr.2 - Display hardcoded text and save to file
+  hosts: remote_host_webservers
+
+  tasks:
+    - name: Display hardcoded message
+      ansible.builtin.copy:
+        dest: /tmp/hardcoded-ansible-file
+        content: "Hello World from Hardcoded message"
+        mode: '0644'

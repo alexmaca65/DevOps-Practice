@@ -1,5 +1,20 @@
+# ---------------------
 # macOS system file
+# ---------------------
 .DS_Store
+
+
+# ---------------------
+# Global IDE-specific (optional)
+# ---------------------
+.vscode/
+.idea/
+.cache_ggshield
+
+
+# ---------------------
+# AWS-Core-Architecture project
+# ---------------------
 
 # Terraform state files
 terraform.tfstate
@@ -19,16 +34,34 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 
-# Sensitive files (if you ever use them – caution!)
+# Sensitive variable files (if you ever use them – caution!)
 .terraform.tfvars
 *.auto.tfvars
 
 # Terragrunt cache
 .terragrunt-cache/
 
-# IDE-specific (optional, if using VSCode or IntelliJ etc.)
-.vscode/
-.idea/
-
-# Optional: lock file (depends on your team setup)
+# Lock file (optional, depends on workflow and team setup)
 .terraform.lock.hcl
+
+
+# ---------------------
+# Jenkins-and-Docker project
+# ---------------------
+
+# Secrets Env Vars
+.env
+
+# Ansible cache
+.ansible/
+
+# Data Volumes --> Jenkins server data and MySQL data container
+Jenkins-and-Docker/data-volumes/jenkins-home/
+Jenkins-and-Docker/data-volumes/db-data/ 
+
+# Jenkins Docker Container 
+Jenkins-and-Docker/docker-containers/base-jenkins-container/remote-key
+Jenkins-and-Docker/docker-containers/base-jenkins-container/remote-key.pub
+
+# Jenkins-Ansible Docker Container 
+Jenkins-and-Docker/docker-containers/jenkins-ansible-container/remote-key
