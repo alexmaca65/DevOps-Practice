@@ -1,3 +1,7 @@
+# Project Infrastructure:
+![Architecture Diagram](z-images/AWS-Core-Infrastructure.png)
+
+
 # Project Structure:
 
 <pre>
